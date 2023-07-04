@@ -4,7 +4,7 @@ import cats.Eq
 
 final case class Role(roleRepr: String)
 
-object Role  {
+object Role {
   val Admin: Role = Role("Admin")
   val Customer: Role = Role("Customer")
 

@@ -38,7 +38,6 @@ class JwtService[F[_] : Applicative](userService: UserService[F]) {
    * Extracts user from jwt token
    *
    * @param jwt token from authorization header.
-   * @param ec  for async futures.
    * @return either exception or optional user.
    */
   def extractUserIdFromJwt(jwt: String): EitherT[F, AppError, UserId] = {
@@ -54,10 +53,9 @@ class JwtService[F[_] : Applicative](userService: UserService[F]) {
       case Success(claims) =>
         val jwtClaims: Claims = claims.getBody
         jwtClaims.get("userId") match {
-          case Some(stringId) => {
+          case Some(stringId) =>
             val id = UserId(UUID.fromString(stringId.toString))
             EitherT.fromEither(Right(id))
-          }
           case None => EitherT.fromEither(InvalidToken(s"Could not get user from claim $jwtClaims").asLeft[UserId])
         }
     }

@@ -5,5 +5,6 @@ case class User(
   login: Login,
   password: Password,
   id: UserId,
-  role: Role)
+  role: Role
+)
 

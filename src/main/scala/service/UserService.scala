@@ -4,7 +4,7 @@ import cats.data.EitherT
 import cats.implicits.toFunctorOps
 import cats.{Functor, Monad}
 import domain.users.errors.{LoginInUse, UserError, UserIdNotFound}
-import domain.users.{User, UserId, UserName, UserRepositoryAlgebra}
+import domain.users.{User, UserId, UserRepositoryAlgebra}
 
 
 class UserService[F[_]](userRepo: UserRepositoryAlgebra[F]) {
