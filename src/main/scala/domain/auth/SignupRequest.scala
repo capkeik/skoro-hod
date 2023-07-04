@@ -1,6 +1,6 @@
 package domain.auth
 
-import domain.users.{Role, User, UserName, Login, Password, UserId}
+import domain.users._
 import tsec.passwordhashers.PasswordHash
 
 
