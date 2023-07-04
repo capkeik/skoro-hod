@@ -7,8 +7,6 @@ import java.util.UUID
 
 case class User(
   userName: String,
-  firstName: String,
-  lastName: String,
   login: String,
   id: UUID,
   role: Role)
