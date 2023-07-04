@@ -14,7 +14,7 @@ trait UserRepositoryAlgebra[F[_]] {
 
   def findByUserName(userName: UserName): OptionT[F, User]
 
-  def deleteByUserName(userName: UserName): EitherT[F, UserNotFound, Unit]
+  def findByLogin(login: Login): OptionT[F, User]
 
   def list: F[List[User]]
 }
