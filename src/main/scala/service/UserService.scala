@@ -4,9 +4,8 @@ import cats.data.EitherT
 import cats.implicits.toFunctorOps
 import cats.{Functor, Monad}
 import domain.users.errors.{LoginInUse, UserError, UserNotFound}
-import domain.users.{User, UserRepositoryAlgebra}
+import domain.users.{User, UserId, UserName, UserRepositoryAlgebra}
 
-import java.util.UUID
 
 class UserService[F[_]](userRepo: UserRepositoryAlgebra[F]) {
   def createUser(user: User)(implicit M: Monad[F]): EitherT[F, LoginInUse, User] =
@@ -14,18 +13,18 @@ class UserService[F[_]](userRepo: UserRepositoryAlgebra[F]) {
       saved <- userRepo.create(user)
     } yield saved
 
-  def getUser(userId: UUID)(implicit F: Functor[F]): EitherT[F, UserNotFound, User] =
+  def getUser(userId: UserId)(implicit F: Functor[F]): EitherT[F, UserNotFound, User] =
     userRepo.get(userId).toRight(UserNotFound)
 
   def getUserByName(
-    userName: String,
+    userName: UserName,
   )(implicit F: Functor[F]): EitherT[F, UserNotFound, User] =
     userRepo.findByUserName(userName).toRight(UserNotFound)
 
-  def deleteUser(userId: UUID)(implicit F: Functor[F]): F[Unit] =
+  def deleteUser(userId: UserId)(implicit F: Functor[F]): F[Unit] =
     userRepo.delete(userId).value.void
 
-  def deleteByUserName(userName: String)(implicit F: Functor[F]): F[Unit] =
+  def deleteByUserName(userName: UserName)(implicit F: Functor[F]): F[Unit] =
     userRepo.deleteByUserName(userName).value.void
 
   def update(user: User)(implicit M: Monad[F]): EitherT[F, UserError, User] =
