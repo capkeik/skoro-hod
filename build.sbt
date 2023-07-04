@@ -6,5 +6,6 @@ lazy val root = (project in file("."))
   .settings(
     name := "tinkoff-practice-summer-2023",
     libraryDependencies ++= Dependencies.allDeps,
-    dependencyOverrides += "io.circe" %% "circe-core" % Dependencies.V.circe
+    dependencyOverrides += "io.circe" %% "circe-core" % Dependencies.V.circe,
+    scalacOptions ++= Seq("-Ymacro-annotations")
   )
