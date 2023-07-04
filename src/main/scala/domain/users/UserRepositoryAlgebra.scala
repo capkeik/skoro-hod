@@ -3,8 +3,6 @@ package domain.users
 import cats.data.{EitherT, OptionT}
 import domain.users.errors.{LoginInUse, UserError, UserNotFound}
 
-import java.util.UUID
-
 trait UserRepositoryAlgebra[F[_]] {
   def create(user: User): EitherT[F, LoginInUse, User]
 
