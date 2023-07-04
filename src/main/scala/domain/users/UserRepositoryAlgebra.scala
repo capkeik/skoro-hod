@@ -1,7 +1,7 @@
 package domain.users
 
 import cats.data.{EitherT, OptionT}
-import domain.users.errors.{LoginInUse, UserError, UserNotFound}
+import domain.users.errors.{LoginInUse, UserError, UserIdNotFound}
 
 trait UserRepositoryAlgebra[F[_]] {
   def create(user: User): EitherT[F, LoginInUse, User]
@@ -10,9 +10,7 @@ trait UserRepositoryAlgebra[F[_]] {
 
   def get(userId: UserId): OptionT[F, User]
 
-  def delete(userId: UserId): EitherT[F, UserNotFound, Unit]
-
-  def findByUserName(userName: UserName): OptionT[F, User]
+  def delete(userId: UserId): EitherT[F, UserIdNotFound, Unit]
 
   def findByLogin(login: Login): OptionT[F, User]
 

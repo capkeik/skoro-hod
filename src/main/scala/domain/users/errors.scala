@@ -8,9 +8,9 @@ object errors {
   sealed abstract class UserError(
     val message: String,
     val cause: Option[Throwable] = None
-  ) extends AppError
+  ) extends AppError(message, cause)
 
-  case class UserNotFound(id: UUID)
+  case class UserIdNotFound(id: UUID)
     extends UserError(s"User with id $id not found")
 
   case class LoginInUse(login: String)

@@ -3,7 +3,7 @@ package service
 import cats.data.EitherT
 import cats.implicits.toFunctorOps
 import cats.{Functor, Monad}
-import domain.users.errors.{LoginInUse, UserError, UserNotFound}
+import domain.users.errors.{LoginInUse, UserError, UserIdNotFound}
 import domain.users.{User, UserId, UserName, UserRepositoryAlgebra}
 
 
@@ -13,19 +13,11 @@ class UserService[F[_]](userRepo: UserRepositoryAlgebra[F]) {
       saved <- userRepo.create(user)
     } yield saved
 
-  def getUser(userId: UserId)(implicit F: Functor[F]): EitherT[F, UserNotFound.type, User] =
-    userRepo.get(userId).toRight(UserNotFound)
-
-  def getUserByName(
-    userName: UserName,
-  )(implicit F: Functor[F]): EitherT[F, UserNotFound.type, User] =
-    userRepo.findByUserName(userName).toRight(UserNotFound)
+  def getUser(userId: UserId)(implicit F: Functor[F]): EitherT[F, UserIdNotFound, User] =
+    userRepo.get(userId).toRight(UserIdNotFound(userId.value))
 
   def deleteUser(userId: UserId)(implicit F: Functor[F]): F[Unit] =
     userRepo.delete(userId).value.void
-
-  def deleteByUserName(userName: UserName)(implicit F: Functor[F]): F[Unit] =
-    userRepo.deleteByUserName(userName).value.void
 
   def update(user: User)(implicit M: Monad[F]): EitherT[F, UserError, User] =
     for {
