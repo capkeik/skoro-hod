@@ -4,14 +4,24 @@ import cats.Id
 import cats.data.{EitherT, OptionT}
 import cats.effect.IO
 import cats.implicits.catsSyntaxEitherId
+import domain.users.Role.Admin
 import domain.users.errors.{LoginInUse, UserError, UserIdNotFound}
-import domain.users.{Login, User, UserId, UserRepositoryAlgebra}
+import domain.users.{Login, Password, User, UserId, UserName, UserRepositoryAlgebra}
 
+import java.util.UUID
 import scala.collection.mutable
 
 class UserInMemoryRepository extends UserRepositoryAlgebra[IO] {
 
-  private val users = mutable.Set.empty[User]
+  private val users = mutable.Set(
+    User(
+      UserName("test user"),
+      Login("admin"),
+      Password("admin"),
+      UserId(UUID.randomUUID()),
+      Admin
+    )
+  )
 
   override def create(user: User): EitherT[IO, LoginInUse, User] =
     EitherT.fromEither(
