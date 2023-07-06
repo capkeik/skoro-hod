@@ -2,46 +2,36 @@ package repositories.inmemory
 
 import cats.Id
 import cats.data.{EitherT, OptionT}
+import cats.effect.IO
 import cats.implicits.catsSyntaxEitherId
 import domain.users.errors.{LoginInUse, UserError, UserIdNotFound}
 import domain.users.{Login, User, UserId, UserRepositoryAlgebra}
 
 import scala.collection.mutable
 
-class UserInMemoryRepository extends UserRepositoryAlgebra[Id] {
+class UserInMemoryRepository extends UserRepositoryAlgebra[IO] {
 
   private val users = mutable.Set.empty[User]
 
-  override def create(user: User): EitherT[Id, LoginInUse, User] =
-    EitherT.fromEither(findByLogin(user.login).getOrElseF(user).asRight[LoginInUse])
+  override def create(user: User): EitherT[IO, LoginInUse, User] =
+    EitherT.fromEither(
+      if (users.add(user)) {
+        user.asRight
+    } else LoginInUse(user.login.value).asLeft[User])
 
-  override def findByLogin(login: Login): OptionT[Id, User] =
-    OptionT[Id, User](users.find(_.login == login))
+  override def findByLogin(login: Login): OptionT[IO, User] =
+    OptionT[IO, User](IO.pure(users.find(_.login == login)))
 
-  override def update(user: User): EitherT[Id, UserError, User] = {
-    if (get(user.id).isEmpty) EitherT.fromEither(UserIdNotFound(user.id.value).asLeft)
-    else if (!findByLogin(user.login).isEmpty) EitherT.fromEither(LoginInUse(user.login.value).asLeft)
-    else {
-      val u = get(user.id).getOrElseF(user)
-      users.remove(u)
-      users.add(user)
-      EitherT.pure(user)
-    }
-  }
+  override def update(user: User): EitherT[IO, UserError, User] = ???
 
-  override def delete(userId: UserId): EitherT[Id, UserIdNotFound, Unit] =
-    if (get(userId).isEmpty) EitherT.pure(UserIdNotFound(userId.value).asLeft)
-    else {
-      get(userId).value.map(
-        u => {
-          users.remove(u)
-        }
-      )
-      EitherT.pure()
-    }
+  override def delete(userId: UserId): EitherT[IO, UserIdNotFound, Unit] = ???
 
-  override def get(userId: UserId): OptionT[Id, User] =
-    OptionT[Id, User](users.find(_.id == userId))
 
-  override def list: Id[List[User]] = users.toList
+  override def get(userId: UserId): OptionT[IO, User] =
+    OptionT[IO, User](IO.pure(users.find(_.id == userId)))
+
+  override def list: IO[List[User]] = IO.pure(users.toList)
+}
+object UserInMemoryRepository {
+  def make = new UserInMemoryRepository
 }

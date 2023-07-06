@@ -1,10 +1,10 @@
 package service
 
-import cats.data.EitherT
+import cats.data.{EitherT, OptionT}
 import cats.implicits.toFunctorOps
 import cats.{Functor, Monad}
 import domain.users.errors.{LoginInUse, UserError, UserIdNotFound}
-import domain.users.{User, UserId, UserRepositoryAlgebra}
+import domain.users.{Login, User, UserId, UserRepositoryAlgebra}
 
 
 class UserService[F[_]](userRepo: UserRepositoryAlgebra[F]) {
@@ -15,6 +15,9 @@ class UserService[F[_]](userRepo: UserRepositoryAlgebra[F]) {
 
   def getUser(userId: UserId)(implicit F: Functor[F]): EitherT[F, UserIdNotFound, User] =
     userRepo.get(userId).toRight(UserIdNotFound(userId.value))
+
+  def getUserByLogin(login: Login): OptionT[F, User] =
+    userRepo.findByLogin(login)
 
   def deleteUser(userId: UserId)(implicit F: Functor[F]): F[Unit] =
     userRepo.delete(userId).value.void

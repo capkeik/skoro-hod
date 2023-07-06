@@ -40,7 +40,7 @@ class JwtService[F[_] : Applicative](userService: UserService[F]) {
    * @param jwt token from authorization header.
    * @return either exception or optional user.
    */
-  def extractUserIdFromJwt(jwt: String): EitherT[F, AppError, UserId] = {
+  def extractUserIdFromJwt(jwt: String): EitherT[F, InvalidToken, UserId] = {
     val decodedJwtStr =
       URLDecoder.decode(jwt, StandardCharsets.UTF_8.toString)
     Try {
