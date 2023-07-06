@@ -49,7 +49,8 @@ class JwtService[F[_] : Applicative](userService: UserService[F]) {
         .setSigningKey(secret.getBytes(StandardCharsets.UTF_8.toString))
         .parseClaimsJws(decodedJwtStr)
     } match {
-      case Failure(exception) => EitherT.fromEither(InvalidToken(s"Exception while decoding JWT $jwt", Some(exception)).asLeft[UserId])
+      case Failure(exception) => EitherT
+        .fromEither(InvalidToken(s"Exception while decoding JWT $jwt", Some(exception)).asLeft[UserId])
       case Success(claims) =>
         val jwtClaims: Claims = claims.getBody
         jwtClaims.get("userId") match {
