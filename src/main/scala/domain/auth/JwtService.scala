@@ -3,11 +3,9 @@ package domain.auth
 import cats.Applicative
 import cats.data.EitherT
 import cats.implicits.catsSyntaxEitherId
-import domain.AppError
 import domain.auth.errors.InvalidToken
 import domain.users.UserId
 import io.jsonwebtoken.{Claims, Jwts, SignatureAlgorithm}
-import service.UserService
 
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
@@ -15,7 +13,7 @@ import java.time.Instant
 import java.util.{Date, UUID}
 import scala.util.{Failure, Success, Try}
 
-class JwtService[F[_] : Applicative](userService: UserService[F]) {
+class JwtService[F[_] : Applicative] {
 
   /** Jwt token secret */
   private val secret = "secret secretsecret secret"
@@ -30,7 +28,7 @@ class JwtService[F[_] : Applicative](userService: UserService[F]) {
       .setIssuedAt(Date.from(now)) // time from which token is active
       .setExpiration(Date.from(now.plusSeconds(ttlSeconds))) // time to which token is active
       .signWith(SignatureAlgorithm.HS256, secret.getBytes(StandardCharsets.UTF_8.toString)
-      ).claim("userId", userId.value) // adding claim
+      ).claim("userId", userId.value.toString) // adding claim
     jwt.compact()
   }
 

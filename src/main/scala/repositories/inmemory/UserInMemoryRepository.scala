@@ -1,6 +1,5 @@
 package repositories.inmemory
 
-import cats.Id
 import cats.data.{EitherT, OptionT}
 import cats.effect.IO
 import cats.implicits.catsSyntaxEitherId

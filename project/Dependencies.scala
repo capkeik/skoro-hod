@@ -11,6 +11,8 @@ object Dependencies {
     lazy val jwt = "0.9.1"
     lazy val tapir = "1.4.0"
     lazy val http4s = "0.23.19"
+    lazy val jaxb = "2.3.1"
+    lazy val sttp = "3.8.15"
   }
 
   def tofu(artifact: String): ModuleID = "tf.tofu" %% artifact % V.tofu
@@ -22,6 +24,8 @@ object Dependencies {
   val newtype = "io.estatico" %% "newtype" % V.newtype
   val jsonWebToken = "io.jsonwebtoken" % "jjwt" % V.jwt
   val http4s = "org.http4s" %% "http4s-ember-server" % V.http4s
+  val jaxb = "javax.xml.bind" % "jaxb-api" % V.jaxb
+  val sttp = "com.softwaremill.sttp.client3" %% "core" % V.sttp
 
   val allDeps: Seq[sbt.ModuleID] = Seq(
     catsEffect,
@@ -30,7 +34,8 @@ object Dependencies {
     tofuDerevo,
     jsonWebToken,
     http4s,
-    "com.softwaremill.sttp.client3" %% "core" % "3.8.15",
+    sttp,
+    jaxb,
     tofu("tofu-kernel"),
     tofu("tofu-logging-derivation"),
     tofu("tofu-logging-layout"),
