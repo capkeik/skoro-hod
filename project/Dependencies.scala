@@ -3,20 +3,22 @@ import sbt.*
 object Dependencies {
   object V {
     lazy val catsEffect = "3.5.1"
-    lazy val catsCore = "2.9.0"
-    lazy val tofu = "0.12.0.1"
+    lazy val catsCore   = "2.9.0"
+    lazy val tofu       = "0.12.0.1"
     lazy val tofuDerevo = "0.13.0"
-    lazy val newtype = "0.4.4"
-    lazy val circe = "0.14.5"
-    lazy val jwt = "0.9.1"
-    lazy val tapir = "1.4.0"
-    lazy val http4s = "0.23.19"
-    lazy val jaxb = "2.3.1"
-    lazy val sttp = "3.8.15"
+    lazy val newtype    = "0.4.4"
+    lazy val circe      = "0.14.5"
+    lazy val jwt        = "0.9.1"
+    lazy val tapir      = "1.4.0"
+    lazy val http4s     = "0.23.19"
+    lazy val jaxb       = "2.3.1"
+    lazy val sttp       = "3.8.15"
+    lazy val doobie     = "1.0.0-RC2"
   }
 
   def tofu(artifact: String): ModuleID = "tf.tofu" %% artifact % V.tofu
   def tapir(artifact: String): ModuleID = "com.softwaremill.sttp.tapir" %% s"tapir-$artifact" % V.tapir
+  def doobie(artifact: String): ModuleID = "org.tpolecat" %% s"doobie-$artifact" % V.doobie
 
   val catsEffect = "org.typelevel" %% "cats-effect" % V.catsEffect
   val catsCore = "org.typelevel" %% "cats-core" % V.catsCore
@@ -46,6 +48,9 @@ object Dependencies {
     tofu("tofu-doobie-logging-ce3"),
     tapir("core"),
     tapir("http4s-server"),
-    tapir("json-circe")
+    tapir("json-circe"),
+    doobie("core"),
+    doobie("hikari"),
+    doobie("postgres")
   )
 }
