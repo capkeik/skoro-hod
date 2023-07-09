@@ -12,13 +12,13 @@ import java.util.UUID
 package object users {
   @newtype
   @derive(loggable, encoder, decoder)
-  case class UserId(value: UUID)
+  case class UserId(value: Long)
 
   object UserId {
     implicit val schema: Schema[UserId] = Schema
-      .schemaForUUID.map(u => Some(UserId(u)))(_.value)
+      .schemaForLong.map(l => Some(UserId(l)))(_.value)
     implicit val codec: Codec[String, UserId, TextPlain] =
-      Codec.uuid.map(UserId(_))(_.value)
+      Codec.long.map(UserId(_))(_.value)
   }
 
   @derive(loggable, encoder, decoder)

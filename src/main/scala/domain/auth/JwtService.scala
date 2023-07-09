@@ -53,7 +53,7 @@ class JwtService[F[_] : Applicative] {
         val jwtClaims: Claims = claims.getBody
         jwtClaims.get("userId") match {
           case Some(stringId) =>
-            val id = UserId(UUID.fromString(stringId.toString))
+            val id = UserId(stringId.toString.toLong)
             EitherT.fromEither(Right(id))
           case None => EitherT.fromEither(InvalidToken(s"Could not get user from claim $jwtClaims").asLeft[UserId])
         }

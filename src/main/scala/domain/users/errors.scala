@@ -10,7 +10,7 @@ object errors {
     val cause: Option[Throwable] = None
   ) extends AppError(message, cause)
 
-  case class UserIdNotFound(id: UUID)
+  case class UserIdNotFound(id: Long)
     extends UserError(s"User with id $id not found")
 
   case class LoginInUse(login: String)

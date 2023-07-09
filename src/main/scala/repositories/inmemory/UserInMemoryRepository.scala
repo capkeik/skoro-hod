@@ -17,7 +17,7 @@ class UserInMemoryRepository extends UserRepositoryAlgebra[IO] {
       UserName("test user"),
       Login("admin"),
       Password("admin"),
-      UserId(UUID.randomUUID()),
+      UserId(0L),
       Admin
     )
   )
