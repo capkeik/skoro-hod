@@ -4,7 +4,7 @@ import cats.data.{EitherT, OptionT}
 import domain.users.errors.{LoginInUse, UserError, UserIdNotFound}
 
 trait UserRepositoryAlgebra[F[_]] {
-  def create(user: User): EitherT[F, LoginInUse, User]
+  def create(user: CreateUser): EitherT[F, LoginInUse, User]
 
   def update(user: User): EitherT[F, UserError, User]
 

@@ -8,3 +8,10 @@ case class User(
   role: Role
 )
 
+case class CreateUser(
+  userName: UserName,
+  login: Login,
+  password: Password,
+  role: Role
+)
+
