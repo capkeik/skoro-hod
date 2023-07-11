@@ -2,7 +2,7 @@ package controllers
 
 import cats.Monad
 import cats.data.EitherT
-import cats.implicits.catsSyntaxEitherId
+import cats.implicits._
 import domain.auth.JwtService
 import domain.users.{CreateUser, UserName}
 import domain.users.errors.LoginInUse
@@ -25,7 +25,7 @@ object UserController {
   ): UserController[F] =
     new Impl(userService, jwtService)
   class Impl[F[_]: Monad](userService: UserService[F], jwtService: JwtService[F]) extends UserController[F] {
-    override val signUp: ServerEndpoint[Any, F]                                                                  =
+    override val signUp: ServerEndpoint[Any, F] =
       endpoints.signUp.serverLogic {
         form => {
           val createUser = CreateUser(
@@ -34,23 +34,32 @@ object UserController {
             form.password,
             form.role
           )
-          val fu = userService.createUser(createUser).value
-          utils.transform(fu) {
-            case Left(error) => LoginInUse(error.toString).asLeft[String]
-            case Right(id) => jwtService.generateJwt(id).asRight[LoginInUse]
+          userService.createUser(createUser).value.map {
+            case Right(_) => ().asRight[LoginInUse]
+            case Left(_) => LoginInUse(form.login.value).asLeft[Unit]
           }
         }
       }
+
+//    val idx: ServerEndpoint[Any, F] =
+//      endpoints.idx.serverLogic {
+//        _ => EitherT.fromEither("Hello".asRight[LoginInUse])
+//      }
     override val all: List[ServerEndpoint[Any, F]] = List(
       signUp
     )
   }
 
   private object endpoints {
-    val signUp: PublicEndpoint[SignUpForm, LoginInUse, String, Any] = endpoint.post
+    val signUp: PublicEndpoint[SignUpForm, LoginInUse, Unit, Any] = endpoint.post
       .in("users")
       .description("Sign Up endpoint")
       .in(jsonBody[SignUpForm])
+      .errorOut(jsonBody[LoginInUse])
+
+    val idx: PublicEndpoint[Unit, LoginInUse, String, Any] = endpoint.get
+      .in("home")
+      .description("Sign Up endpoint")
       .errorOut(jsonBody[LoginInUse])
       .out(jsonBody[String])
   }

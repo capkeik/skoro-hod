@@ -8,12 +8,13 @@ import domain.auth.errors.IncorrectCredentials
 import models.forms.SignInForm
 
 class AuthService[F[_]: Monad](userService: UserService[F], jwtService: JwtService[F]) {
-  def signIn(signInForm: SignInForm): EitherT[F, IncorrectCredentials, String] = {
-     EitherT( userService.getUserByLogin(signInForm.login).value.map {
-        case Some(u) =>
-          if (signInForm.password == u.password) jwtService.generateJwt(u.id).asRight[IncorrectCredentials]
-          else IncorrectCredentials().asLeft
-        case _ => IncorrectCredentials().asLeft
-      })
-  }
+  def signIn(signInForm: SignInForm): EitherT[F, IncorrectCredentials, String] = ???
+//  {
+//     EitherT( userService.getUserByLogin(signInForm.login).value.map {
+//        case Some(u) =>
+//          if (signInForm.password == u.password) jwtService.generateJwt(u.id).asRight[IncorrectCredentials]
+//          else IncorrectCredentials().asLeft
+//        case _ => IncorrectCredentials().asLeft
+//      })
+//  }
 }

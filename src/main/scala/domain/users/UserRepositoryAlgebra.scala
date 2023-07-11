@@ -9,11 +9,11 @@ trait UserRepositoryAlgebra[F[_]] {
 
   def update(user: User): EitherT[F, UserError, User]
 
-  def get(userId: UserId): OptionT[F, User]
+  def get(userId: UserId): F[Either[AppError, Option[User]]]
 
   def delete(userId: UserId): EitherT[F, UserIdNotFound, Unit]
 
-  def findByLogin(login: Login): OptionT[F, User]
+  def findByLogin(login: Login): F[Either[AppError, Option[User]]]
 
   def list: F[List[User]]
 }
