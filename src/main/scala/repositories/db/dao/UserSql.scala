@@ -61,7 +61,7 @@ object UserSql {
       listSql.to[List]
 
     override def findByLogin(login: Login): ConnectionIO[Option[User]] =
-      sqls.findByLoginSql(login).option
+      findByLoginSql(login).option
   }
 
   private object sqls {
@@ -76,12 +76,14 @@ object UserSql {
       into users (user_name,
                   login,
                   is_admin,
-                  passwd)
+                  passwd,
+                  balance)
 
       values (${user.userName.value},
               ${user.login.value},
               $isAdmin,
-              ${user.password.value})
+              ${user.password.value},
+              10000)
          """.update
     }
     def updateSql(user: User): Update0 =
